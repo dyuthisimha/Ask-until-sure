@@ -22,7 +22,7 @@ The client asks for a paid response over normal HTTP. An unpaid client stops at 
 
 ### x402 Commerce Template Resource Server
 
-Hono exposes public `GET /health` and a default paid route at `GET /api/wallet/:address`. Address syntax is checked before the payment middleware. Once payment is verified, the handler asks the resource service for the deterministic result. Participants can replace this route with their own paid data, compute, verification, or action endpoint.
+Hono exposes public `GET /health` and three paid research routes: `GET /api/research/regulatory`, `/api/research/caselaw`, and `/api/research/specialist`. Query syntax is checked before the payment middleware. Once payment is verified, the handler asks the research service for the deterministic result.
 
 ### x402 Middleware
 

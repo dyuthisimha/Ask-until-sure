@@ -30,14 +30,12 @@ This template is intentionally small and TypeScript-first. It gives participants
 | Payment asset | USDC ASA |
 | Algorand SDK | `algosdk` |
 
-## Default Sample Resource
-
-The starter project ships with a paid wallet-data example so participants can test x402 before replacing the resource.
+## Paid Research Resource
 
 | Piece | Technology |
 | --- | --- |
-| Paid route | `GET /api/wallet/:address` |
-| Data source | AlgoNode Algorand Indexer |
+| Paid routes | `GET /api/research/regulatory`, `caselaw`, `specialist` |
+| Data source | Mock research service (regulatory, case law, specialist) |
 | TestNet USDC ASA | `10458941` |
 | Browser demo | Plain HTML, CSS, and JavaScript served by Hono |
 
@@ -49,10 +47,7 @@ The starter project ships with a paid wallet-data example so participants can te
 | Agent skill guide | `skills.md` |
 | Participant brief | `PROJECT_BRIEF.md` |
 | x402 helper CLI | `scripts/x402-cli.ts` |
-| Agent testing sandbox | `scripts/agent-sandbox.ts` |
 | Payment flow simulator | `scripts/payment-flow-simulator.ts` |
-| Client SDK helpers | `sdk/extensions.ts` |
-| Smart contract templates | `contracts/templates/` |
 | Reference docs | `docs/resources/` |
 
 ## What Is Not Included By Default

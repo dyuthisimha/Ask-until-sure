@@ -9,7 +9,7 @@ Use this map when a participant asks "where do I change the template?"
 | Unpaid challenge demo | `client/unpaid-client.ts` |
 | Paid buyer flow | `client/paid-client.ts` |
 | Autonomous buyer flow | `client/agent-client.ts` |
-| Shared buyer helpers | `client/lib.ts`, `sdk/extensions.ts` |
+| Shared buyer helpers | `client/lib.ts` |
 | Browser payment demo | `src/web/page.ts`, `src/web/app-script.ts`, `src/web/styles.ts` |
 
 ## Server Side
@@ -18,7 +18,7 @@ Use this map when a participant asks "where do I change the template?"
 | --- | --- |
 | App routes and middleware order | `src/app.ts` |
 | Runtime env validation | `src/config.ts` |
-| Paid business logic | `src/routes/wallet.ts` or a new route module |
+| Paid business logic | `src/routes/research.ts` |
 | Local one-click demo agent | `src/routes/demo.ts` |
 | Server start | `src/server.ts` |
 
@@ -44,11 +44,8 @@ Use this map when a participant asks "where do I change the template?"
 
 | Component | Files |
 | --- | --- |
-| Smart contract templates | `contracts/templates/` |
 | x402 CLI | `scripts/x402-cli.ts` |
-| Agent testing sandbox | `scripts/agent-sandbox.ts` |
 | Payment flow simulator | `scripts/payment-flow-simulator.ts` |
-| SDK extensions | `sdk/extensions.ts` |
 
 ## Safe Customization Order
 

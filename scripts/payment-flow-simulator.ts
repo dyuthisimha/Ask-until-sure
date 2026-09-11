@@ -1,7 +1,7 @@
 import 'dotenv/config';
 
-const route = process.env.SIMULATOR_ROUTE ?? '/api/wallet/:address';
-const price = process.env.PRICE_USDC ?? '$0.001';
+const route = process.env.SIMULATOR_ROUTE ?? '/api/research/{regulatory,caselaw,specialist}';
+const price = process.env.PRICE_USDC ?? '$0.10–$0.20';
 const network = process.env.ALGORAND_NETWORK ?? 'testnet';
 const facilitator = process.env.FACILITATOR_URL ?? 'https://facilitator.goplausible.xyz';
 const payTo = process.env.PAY_TO_ADDRESS ?? '<PAY_TO_ADDRESS>';

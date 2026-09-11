@@ -17,7 +17,6 @@
     "client:paid": "tsx client/paid-client.ts",
     "client:agent": "tsx client/agent-client.ts",
     "x402": "tsx scripts/x402-cli.ts",
-    "sandbox": "tsx scripts/agent-sandbox.ts",
     "simulate": "tsx scripts/payment-flow-simulator.ts"
   },
   "dependencies": {

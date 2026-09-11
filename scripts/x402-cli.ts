@@ -26,7 +26,11 @@ function inspect() {
       indexerUrl: config.indexerUrl,
       demoMode: config.demoMode,
       challengeMode: config.challengeMode,
-      protectedRoute: 'GET /api/wallet/:address',
+      protectedRoutes: [
+        'GET /api/research/regulatory',
+        'GET /api/research/caselaw',
+        'GET /api/research/specialist',
+      ],
     },
     null,
     2,

@@ -1,10 +1,11 @@
-import { loadConfig, type RuntimeConfig } from '../src/config.js';
+import { ALGORAND_TESTNET_CAIP2, USDC_TESTNET_ASA_ID } from '@x402/avm';
+import type { RuntimeConfig } from '../src/config.js';
 
 export const testConfig: RuntimeConfig = {
   port: 3000,
   networkName: 'testnet',
-  network: 'eip155:1:algo:testnet',
-  usdcAssetId: '10458941',
+  network: ALGORAND_TESTNET_CAIP2,
+  usdcAssetId: USDC_TESTNET_ASA_ID,
   indexerUrl: 'https://testnet-idx.algonode.cloud',
   facilitatorUrl: 'https://facilitator.goplausible.xyz',
   payTo: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY5HFKQ',

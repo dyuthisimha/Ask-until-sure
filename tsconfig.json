@@ -12,6 +12,6 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "client/**/*.ts", "scripts/**/*.ts", "sdk/**/*.ts"],
+  "include": ["src/**/*.ts", "client/**/*.ts", "scripts/**/*.ts"],
   "exclude": ["dist", "node_modules"]
 }

@@ -37,8 +37,8 @@ curl http://localhost:3000/health
 **Run:**
 
 ```bash
-pnpm test -- test/algorand.test.ts
-curl -i http://localhost:3000/api/wallet/not-an-address
+pnpm test
+curl -i 'http://localhost:3000/api/research/regulatory'
 ```
 
 **Observe:** The default mapping test passes; invalid input returns `400` before payment.
@@ -73,7 +73,7 @@ pnpm build
 pnpm client:unpaid
 ```
 
-**Observe:** `402`, `$0.001`, Algorand TestNet network reference, and asset `10458941`.
+**Observe:** `402`, `$0.10`, Algorand TestNet network reference, and asset `10458941`.
 
 **Key point:** Payment terms are machine-readable.
 

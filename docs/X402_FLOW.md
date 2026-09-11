@@ -1,6 +1,6 @@
 # The x402 Commerce Template x402 Flow
 
-This is the real request lifecycle for the default sample route, `GET /api/wallet/:address`. Custom services should keep the same payment lifecycle and replace only the resource path, validation, and business logic.
+This is the request lifecycle for the paid research routes (`GET /api/research/regulatory`, `caselaw`, `specialist`). The same payment lifecycle applies to all three endpoints.
 
 ```mermaid
 sequenceDiagram
@@ -9,7 +9,7 @@ sequenceDiagram
     participant Facilitator
     participant Algorand
     participant Indexer
-    Client->>Server: GET /api/wallet/ADDRESS
+    Client->>Server: GET /api/research/regulatory?q=QUERY
     Server-->>Client: 402 + PAYMENT-REQUIRED
     Client->>Client: Select requirement and sign payment
     Client->>Server: GET + PAYMENT-SIGNATURE

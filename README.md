@@ -50,7 +50,6 @@ pnpm client:agent
 ├── PROJECT_BRIEF.md
 ├── client/
 ├── docs/resources/
-├── sdk/
 ├── scripts/
 ├── src/
 └── test/
