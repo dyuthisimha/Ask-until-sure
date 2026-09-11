@@ -13,6 +13,29 @@ export function createDemoResearchHandler(config: RuntimeConfig) {
   const research = new ResearchService();
 
   return async (c: Context) => {
+    if (!config.demoMode) {
+      return c.json(
+        { error: 'demo_disabled', message: 'Demo mode is disabled. Set DEMO_MODE=true for local TestNet only.' },
+        403,
+      );
+    }
+    if (config.networkName === 'mainnet') {
+      return c.json({ error: 'demo_disabled', message: 'The demo agent is refused on MainNet.' }, 403);
+    }
+    if (!config.demoMnemonic) {
+      return c.json({ error: 'demo_disabled', message: 'CLIENT_MNEMONIC is required for the demo agent.' }, 403);
+    }
+
+    const payerAddr = algosdk.mnemonicToSecretKey(config.demoMnemonic).addr.toString();
+    if (payerAddr === config.payTo) {
+      return c.json({ error: 'demo_disabled', message: 'Payer and PAY_TO_ADDRESS must be different accounts.' }, 403);
+    }
+
+    const body: { q?: string; budgetCap?: number; confidenceThreshold?: number } = await c.req
+      .json()
+      .catch(() => ({}));
+
+  return async (c: Context) => {
     const body: { q?: string; budgetCap?: number; confidenceThreshold?: number } = await c.req
       .json()
       .catch(() => ({}));
