@@ -55,6 +55,11 @@ pnpm client:agent
 └── test/
 ```
 
+## How the Demo Works
+
+- **CLI clients** (`pnpm client:unpaid`, `pnpm client:paid`, `pnpm client:agent`) run the real x402 lifecycle: challenge → sign → verify → settle through GoPlausible on Algorand TestNet.
+- **Browser dashboard** (`POST /demo/research`) is a simulated flow for visualization. It calls the research logic directly rather than going through x402 verification, and — if a demo mnemonic is configured — sends a small real ALGO transfer per source so the receipt log has a genuine TestNet transaction to link to. It does not perform real USDC x402 settlement and won't appear in GoPlausible/Bazaar activity.
+
 ## Safety
 
 - Do not commit `.env`.
