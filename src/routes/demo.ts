@@ -6,8 +6,28 @@ import { ResearchService } from '../services/research.js';
 const algodClient = new algosdk.Algodv2('', 'https://testnet-api.algonode.cloud', '');
 
 /**
- * Demo handler that performs real Algorand TestNet micro-transactions
- * for each research source queried, so transaction IDs are visible on Lora.
+ * Average confidenceDelta each mock source returns across its three
+ * question categories (cosmetics/EU, FDA/drug, generic) in ResearchService.
+ * Used only to rank sources by expected value (delta per dollar) — the
+ * demo has oracle access to its own mock data, unlike the CLI agent.
+ */
+const AVG_CONFIDENCE_DELTA: Record<'regulatory' | 'caselaw' | 'specialist', number> = {
+  regulatory: (0.35 + 0.45 + 0.15) / 3,
+  caselaw: (0.25 + 0.3 + 0.1) / 3,
+  specialist: (0.3 + 0.2 + 0.25) / 3,
+};
+
+/**
+ * Demo handler for the browser dashboard. This is a *simulated* purchase
+ * flow: it calls ResearchService directly instead of going through the real
+ * x402 middleware, and (if a demo mnemonic is configured) sends a small real
+ * ALGO transfer per source so the receipt log links to a genuine TestNet
+ * transaction. It does NOT perform real x402/USDC verification or
+ * settlement through GoPlausible — for that, use the CLI clients
+ * (`pnpm client:paid`, `pnpm client:agent`).
+ *
+ * Because it still moves funds and is reachable without auth, it refuses to
+ * run outside a safe local TestNet demo configuration.
  */
 export function createDemoResearchHandler(config: RuntimeConfig) {
   const research = new ResearchService();
@@ -20,22 +40,28 @@ export function createDemoResearchHandler(config: RuntimeConfig) {
       );
     }
     if (config.networkName === 'mainnet') {
-      return c.json({ error: 'demo_disabled', message: 'The demo agent is refused on MainNet.' }, 403);
+      return c.json({ error: 'demo_disabled', message: 'The demo agent refuses to run on MainNet.' }, 403);
     }
     if (!config.demoMnemonic) {
-      return c.json({ error: 'demo_disabled', message: 'CLIENT_MNEMONIC is required for the demo agent.' }, 403);
+      return c.json({ error: 'demo_disabled', message: 'CLIENT_MNEMONIC is required to run the demo agent.' }, 403);
     }
 
-    const payerAddr = algosdk.mnemonicToSecretKey(config.demoMnemonic).addr.toString();
+    let payerAddr: string;
+    try {
+      payerAddr = algosdk.mnemonicToSecretKey(config.demoMnemonic).addr.toString();
+    } catch {
+      return c.json(
+        { error: 'demo_disabled', message: 'CLIENT_MNEMONIC is not a valid 25-word Algorand mnemonic.' },
+        403,
+      );
+    }
     if (payerAddr === config.payTo) {
-      return c.json({ error: 'demo_disabled', message: 'Payer and PAY_TO_ADDRESS must be different accounts.' }, 403);
+      return c.json(
+        { error: 'demo_disabled', message: 'Payer and PAY_TO_ADDRESS must be different accounts.' },
+        403,
+      );
     }
 
-    const body: { q?: string; budgetCap?: number; confidenceThreshold?: number } = await c.req
-      .json()
-      .catch(() => ({}));
-
-  return async (c: Context) => {
     const body: { q?: string; budgetCap?: number; confidenceThreshold?: number } = await c.req
       .json()
       .catch(() => ({}));
@@ -53,10 +79,10 @@ export function createDemoResearchHandler(config: RuntimeConfig) {
     const receipts: any[] = [];
 
     const sources = [
-      { name: 'regulatory', price: parseFloat(config.prices.regulatory.replace('$', '')), query: (q: string) => research.queryRegulatoryFilings(q) },
-      { name: 'caselaw',    price: parseFloat(config.prices.caselaw.replace('$', '')),    query: (q: string) => research.queryCaseLaw(q) },
-      { name: 'specialist', price: parseFloat(config.prices.specialist.replace('$', '')), query: (q: string) => research.querySpecialist(q) },
-    ];
+      { name: 'regulatory' as const, price: parseFloat(config.prices.regulatory.replace('$', '')), query: (q: string) => research.queryRegulatoryFilings(q) },
+      { name: 'caselaw' as const,    price: parseFloat(config.prices.caselaw.replace('$', '')),    query: (q: string) => research.queryCaseLaw(q) },
+      { name: 'specialist' as const, price: parseFloat(config.prices.specialist.replace('$', '')), query: (q: string) => research.querySpecialist(q) },
+    ].sort((a, b) => AVG_CONFIDENCE_DELTA[b.name] / b.price - AVG_CONFIDENCE_DELTA[a.name] / a.price);
 
     let sourcesUsed = 0;
     let sourcesSkipped = 0;
@@ -71,12 +97,10 @@ export function createDemoResearchHandler(config: RuntimeConfig) {
         continue;
       }
 
-      // Use real ResearchService for question-aware findings
       const result = await source.query(q);
       const confidenceGain = result.confidenceDelta * 100;
       const newConfidence = Math.min(100, currentConfidence + confidenceGain);
 
-      // Try to send a real Algorand testnet micro-transaction
       let txId = '';
       const amountMicroAlgo = Math.round(source.price * 1_000_000);
 
@@ -90,7 +114,6 @@ export function createDemoResearchHandler(config: RuntimeConfig) {
           );
         } catch (err: any) {
           console.warn(`Real tx failed for ${source.name}:`, err.message);
-          // Fall back to a mock ID so the demo still works
           txId = 'MOCK_' + generateMockAlgoTxId();
         }
       } else {
@@ -113,7 +136,6 @@ export function createDemoResearchHandler(config: RuntimeConfig) {
       sourcesUsed++;
     }
 
-    // Build the final answer from all findings collected
     const allFindings = receipts.flatMap((r: any) => r.findings);
     let finalAnswer: string;
     if (allFindings.length === 0) {
@@ -141,7 +163,6 @@ export function createDemoResearchHandler(config: RuntimeConfig) {
   };
 }
 
-/** Send a real ALGO micro-payment on TestNet. */
 async function sendRealPayment(
   senderMnemonic: string,
   receiverAddress: string,
@@ -165,7 +186,6 @@ async function sendRealPayment(
   return txid;
 }
 
-/** Fallback: Generate a mock Algorand-style transaction ID (52-char base32). */
 function generateMockAlgoTxId(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
   let id = '';
