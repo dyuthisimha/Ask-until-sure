@@ -97,6 +97,8 @@ Or select **Ask agent to buy** in the browser to show the same lifecycle as a vi
 
 **Common failure:** Payer or receiver not opted into USDC; payer lacks ALGO/USDC.
 
+**Note:** "Ask agent to buy" in the browser is a simulated version of this lifecycle (direct service calls + a real ALGO micro-tx for flavor), not a literal call through the x402 middleware. `pnpm client:paid` is the real one.
+
 ## 47–52 — Verify Algorand Settlement
 
 **Presenter note:** Protocol output should be independently inspectable on-chain.
